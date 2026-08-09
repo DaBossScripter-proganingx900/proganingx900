@@ -30,9 +30,28 @@
       font-family: 'Inter', sans-serif; line-height: 1.6;
     }
 
+    /* Intro Fade In Effect (2 seconds) */
+    .container, #musicBox {
+      opacity: 0;
+      animation: introFadeIn 2s ease forwards;
+    }
+    nav {
+      opacity: 0;
+      animation: navIntroFadeIn 2s ease forwards;
+    }
+    @keyframes introFadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes navIntroFadeIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
     /* Navigation */
     nav { 
-      position:fixed; z-index:1000; top:20px; left:50%; transform:translateX(-50%); 
+      position:fixed; z-index:1000; top:20px; left:50%; 
+      /* transform is handled by the navIntroFadeIn animation, then stays at translateX(-50%) */
       display:flex; gap:5px; padding:8px; width:max-content; max-width:95%; 
       border:1px solid rgba(255,255,255,0.1); border-radius:50px; 
       background:rgba(26,27,35,0.8); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px);
