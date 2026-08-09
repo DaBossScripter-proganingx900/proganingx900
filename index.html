@@ -96,16 +96,15 @@
     }
     .card p { margin-bottom:1rem; } .card p:last-child { margin-bottom:0; }
 
-    /* Lists */
+    /* Normal Lists */
     ul { 
       list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:15px; 
       max-width:600px; margin:2rem auto; 
     }
     li { 
       padding:15px; border-radius:8px; background:var(--card); 
-      border: 1px solid rgba(255,255,255,0.05); position:relative; padding-left:35px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
-    li::before { content: 'â–¹'; position:absolute; left:10px; top:12px; color:var(--blue); font-size:1.2rem; }
 
     /* Video Grid & Cards */
     .video-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:24px; margin:2rem 0; }
