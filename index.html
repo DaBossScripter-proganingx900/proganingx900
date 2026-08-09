@@ -321,12 +321,11 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // --- Audio Autoplay Logic ---
-    // Browsers block audible autoplay. Start the song after the visitor's first click.
     var music = document.getElementById('bgMusic');
+    music.volume = 0.3; // Sets initial volume to 30% so it doesn't blast the user
+    
+    // Browsers block audible autoplay. Start the song after the visitor's first click.
     document.addEventListener('pointerdown', function startMusic() {
       music.play().catch(function () {});
       document.removeEventListener('pointerdown', startMusic);
     }, { once: true });
-  </script>
-</body>
-</html>
