@@ -30,28 +30,9 @@
       font-family: 'Inter', sans-serif; line-height: 1.6;
     }
 
-    /* Intro Fade In Effect (2 seconds) */
-    .container, #musicBox {
-      opacity: 0;
-      animation: introFadeIn 2s ease forwards;
-    }
-    nav {
-      opacity: 0;
-      animation: navIntroFadeIn 2s ease forwards;
-    }
-    @keyframes introFadeIn {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes navIntroFadeIn {
-      0% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
-      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
     /* Navigation */
     nav { 
-      position:fixed; z-index:1000; top:20px; left:50%; 
-      /* transform is handled by the navIntroFadeIn animation, then stays at translateX(-50%) */
+      position:fixed; z-index:1000; top:20px; left:50%; transform:translateX(-50%); 
       display:flex; gap:5px; padding:8px; width:max-content; max-width:95%; 
       border:1px solid rgba(255,255,255,0.1); border-radius:50px; 
       background:rgba(26,27,35,0.8); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px);
@@ -115,15 +96,16 @@
     }
     .card p { margin-bottom:1rem; } .card p:last-child { margin-bottom:0; }
 
-    /* Normal Lists */
+    /* Lists */
     ul { 
       list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:15px; 
       max-width:600px; margin:2rem auto; 
     }
     li { 
       padding:15px; border-radius:8px; background:var(--card); 
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05); position:relative; padding-left:35px;
     }
+    li::before { content: 'â–¹'; position:absolute; left:10px; top:12px; color:var(--blue); font-size:1.2rem; }
 
     /* Video Grid & Cards */
     .video-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:24px; margin:2rem 0; }
@@ -230,7 +212,7 @@
       <p class="subtitle">Projects I've worked on</p>
       <div class="card reveal" style="text-align:center">
         <h2 style="margin-top:0;text-align:center;border:0;display:block;">Guess the Brainrot Color</h2>
-        <p style="color:var(--muted); margin-bottom:2rem;">A 1v1 brainrot color guessing game I fully scripted. Click the button below to play!</p>
+        <p style="color:var(--muted); margin-bottom:2rem;">A fun, interactive guessing game built on Roblox. Click the button below to play!</p>
         <a class="roblox-btn" href="https://www.roblox.com/games/72190536681274/Guess-the-brainrot-color" target="_blank" rel="noopener">Open Roblox Game</a>
       </div>
       <div class="buttons"><button class="btn cyan" data-section="home">Back to Home</button></div>
@@ -257,7 +239,7 @@
       <div class="divider"></div>
       <h1>Prices</h1>
       <div class="card reveal">
-        <p><strong style="color:var(--blue)">Robux:</strong> 1k - 30k <span style="color:var(--muted)">(can increase depending on amount of work/task)</span></p>
+        <p><strong style="color:var(--blue)">Robux:</strong> 1000-30000 <span style="color:var(--muted)">(can increase depending on amount of work/task)</span></p>
         <p><strong style="color:var(--blue)">Cashapp:</strong> $10-50 <span style="color:var(--muted)">(can increase depending on amount of work/task)</span></p>
         <p><strong style="color:var(--blue)">PayPal:</strong> $10-50 <span style="color:var(--muted)">(can increase depending on amount of work/task)</span></p>
         <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;">
@@ -321,11 +303,13 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // --- Audio Autoplay Logic ---
-    var music = document.getElementById('bgMusic');
-    music.volume = 0; // Sets initial volume to 30% so it doesn't blast the user
-    
     // Browsers block audible autoplay. Start the song after the visitor's first click.
+    var music = document.getElementById('bgMusic');
+    music.volume = 0.2; // Set volume to 20%
     document.addEventListener('pointerdown', function startMusic() {
       music.play().catch(function () {});
       document.removeEventListener('pointerdown', startMusic);
     }, { once: true });
+  </script>
+</body>
+</html>
