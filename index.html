@@ -112,9 +112,6 @@
         .progress-track { flex-grow: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
         .progress-bar { height: 100%; background: #ffffff; width: 0%; transition: width 0.1s linear; }
 
-        /* Hidden YouTube Player */
-        .hidden-yt-player { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-
         /* Reveal Animation */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -232,62 +229,34 @@
         <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
     </div>
 
-    <!-- Hidden YouTube Player to stream the audio -->
-    <div class="hidden-yt-player">
-        <iframe id="hiddenYT" width="560" height="315" src="https://www.youtube.com/embed/uxpDa-c-4bY?autoplay=1&loop=1&playlist=uxpDa-c-4bY&controls=0&mute=1&enablejsapi=1" title="Hidden Audio Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
+    <!-- Native HTML5 Audio Player -->
+    <audio id="bgMusic" loop>
+        <source src="https://docs.google.com/uc?export=download&id=1t-Y1PSYgMh1QP3wI8k8wJ1IZ1hSI-oGI" type="audio/mpeg">
+    </audio>
 
     <script>
         // --- Audio Player Logic ---
+        const audio = document.getElementById('bgMusic');
         const audioPlayer = document.getElementById('audioPlayer');
         const progressBar = document.getElementById('progressBar');
-        let ytIframe = document.getElementById('hiddenYT');
-        let ytWindow = ytIframe.contentWindow;
         let isPlaying = false;
         let hasUnmuted = false;
 
-        // Listen for messages from the hidden YouTube iframe to track state
-        window.addEventListener('message', (event) => {
-            if (event.source === ytWindow) {
-                const data = JSON.parse(event.data);
-                
-                // If the event is info delivery (state change or time update)
-                if (data.event === 'infoDelivery') {
-                    if (data.info) {
-                        // Track playing state
-                        if (data.info.playerState === 1) { isPlaying = true; audioPlayer.classList.add('playing'); }
-                        else if (data.info.playerState === 2) { isPlaying = false; audioPlayer.classList.remove('playing'); }
-                        
-                        // Track progress
-                        if (data.info.currentTime && data.info.duration) {
-                            const percent = (data.info.currentTime / data.info.duration) * 100;
-                            progressBar.style.width = percent + '%';
-                        }
-                    }
-                }
-            }
+        // 1. Attempt to autoplay muted (browsers allow this)
+        audio.volume = 0.4; // Set to 40% volume
+        audio.muted = true;
+        audio.play().then(() => {
+            isPlaying = true;
+            audioPlayer.classList.add('playing');
+        }).catch(error => {
+            console.log("Autoplay blocked entirely, waiting for user click.");
         });
 
-        // Command sender function
-        function postCommand(command, args = {}) {
-            ytWindow.postMessage(JSON.stringify({
-                event: 'command',
-                func: command,
-                args: args || []
-            }), '*');
-        }
-
-        // Force the iframe to broadcast updates to our listener
-        ytIframe.onload = () => {
-            postCommand('addEventListener', ['onStateChange']);
-            postCommand('addEventListener', ['infoDelivery']);
-        };
-
-        // Unmute on the first click anywhere on the site
+        // 2. Unmute on the very first click anywhere on the site
         const unmuteOnFirstInteraction = () => {
             if (!hasUnmuted) {
-                postCommand('unMute');
-                postCommand('playVideo');
+                audio.muted = false;
+                audio.play();
                 audioPlayer.classList.add('playing');
                 isPlaying = true;
                 hasUnmuted = true;
@@ -296,7 +265,7 @@
         };
         document.body.addEventListener('click', unmuteOnFirstInteraction);
 
-        // Play/Pause Button functionality
+        // 3. Toggle play/pause when clicking the audio player specifically
         function toggleAudio() {
             setTimeout(() => {
                 if (!hasUnmuted) {
@@ -305,16 +274,22 @@
                 }
                 
                 if (isPlaying) {
-                    postCommand('pauseVideo');
+                    audio.pause();
                     audioPlayer.classList.remove('playing');
                     isPlaying = false;
                 } else {
-                    postCommand('playVideo');
+                    audio.play();
                     audioPlayer.classList.add('playing');
                     isPlaying = true;
                 }
             }, 10);
         }
+
+        // 4. Update the progress bar
+        audio.addEventListener('timeupdate', () => {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = percent + '%';
+        });
 
         // --- Section Switching Logic ---
         function switchSection(sectionId, event) {
