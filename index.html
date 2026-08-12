@@ -29,7 +29,7 @@
     }
 
     /* Intro Fade In Effect (2 seconds) */
-    .container, #musicBox {
+    .container {
       opacity: 0;
       animation: introFadeIn 2s ease forwards;
     }
@@ -162,17 +162,6 @@
     }
     .watch:hover { background:var(--blue); color:#171617; }
 
-    /* Native Audio Player Box */
-    #musicBox { 
-      position:fixed; z-index:1001; right:20px; bottom:20px; padding:10px 14px; 
-      border:1px solid rgba(255,255,255,0.1); border-radius:12px; 
-      background:rgba(26,27,35,0.9); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px);
-      box-shadow:0 10px 30px rgba(0,0,0,0.5); 
-    }
-    #musicBox audio { width:240px; height:34px; }
-    #musicBox audio::-webkit-media-controls-panel { background-color: rgba(26, 27, 35, 0.8); }
-    #musicBox audio { filter: invert(0.85) hue-rotate(180deg) contrast(1.2); }
-
     /* Reveal Animation */
     .reveal { opacity:0; transform:translateY(30px); transition: all 0.8s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
@@ -183,8 +172,6 @@
       nav { padding:5px; gap:2px; width:95%; justify-content:center; } 
       nav button { padding:8px 12px; font-size:0.7rem; } 
       .container { padding-top:100px; }
-      #musicBox { right:15px; bottom:15px; padding:8px; }
-      #musicBox audio { width:200px; }
     }
   </style>
 </head>
@@ -307,13 +294,6 @@
     </section>
   </main>
 
-  <div id="musicBox" aria-label="Background music">
-    <audio id="bgMusic" controls loop preload="metadata">
-      <source src="Drake - Make Them Pay.mp3" type="audio/mpeg">
-      Your browser does not support audio playback.
-    </audio>
-  </div>
-
   <script>
     // --- Section Switching Logic ---
     function showSection(id, updateUrl) {
@@ -352,16 +332,6 @@
       });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // --- Audio Autoplay Logic ---
-    var music = document.getElementById('bgMusic');
-    music.volume = 0.1; // Sets initial volume to 10% so it doesn't blast the user
-    
-    // Browsers block audible autoplay. Start the song after the visitor's first click.
-    document.addEventListener('pointerdown', function startMusic() {
-      music.play().catch(function () {});
-      document.removeEventListener('pointerdown', startMusic);
-    }, { once: true });
   </script>
 </body>
 </html>
